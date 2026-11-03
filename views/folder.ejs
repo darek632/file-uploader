@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= folder.name %></title>
+</head>
+<body>
+  <p><a href="/folders"> Back to folders</a></p>
+
+  <h1><%= folder.name %></h1>
+
+  <h2>Rename folder</h2>
+  <form action="/folders/<%= folder.id %>/update" method="POST">
+    <label for="name">New name</label>
+    <input type="text" id="name" name="name" value="<%= folder.name %>" required>
+    <button type="submit">Save</button>
+  </form>
+
+  <h2>Upload a file to this folder</h2>
+  <form action="/folders/<%= folder.id %>/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="uploaded_file" required>
+    <button type="submit">Upload</button>
+  </form>
+
+  <h2>Files</h2>
+  <% if (folder.files.length === 0) { %>
+    <p>This folder is empty.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Uploaded</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% folder.files.forEach(file => { %>
+          <tr>
+            <td><a href="/files/<%= file.id%>"><%= file.originalname %></a></td>
+            <td><%= file.mimetype %></td>
+            <td><%= (file.size / 1024).toFixed(1) %> KB</td>
+            <td><%= file.createdAt.toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+  <form action="/folders/<%= folder.id %>/delete" method="POST"
+        onsubmit="return confirm('Delete this folder and all its files?');">
+    <button type="submit">Delete folder</button>
+  </form>
+</body>
+</html>

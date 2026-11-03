@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Log in</title></head>
+<body>
+
+<% if (locals.notice) { %>
+    <p><%= notice %></p>
+<% } %>
+
+<h1>Log in</h1>
+
+  <% messages.forEach((message) => { %><p><%= message %></p><% }); %>
+  <form action="/log-in" method="POST">
+    <label>Username <input name="username" required></label>
+    <label>Password <input name="password" type="password" required></label>
+    <button>Log in</button>
+  </form>
+</body>
+</html>

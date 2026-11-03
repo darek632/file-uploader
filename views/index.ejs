@@ -6,25 +6,15 @@
     <title>Home</title>
 </head>
 <body>
-    <h1>Welcome to your inventory manager</h1>
-    <h2><%= title %></h2>
 
-    <h3>This is where your things will go:</h3>
     
-    <!-- Replace part_name / brand with your own table's columns -->
-
-  <ul>
-        <% allItems.forEach((item) => { %>
-            <li>
-                <b><%= item.part_name %></b>
-                <p><%= item.brand %></p>
-            </li>
-        <% }); %>
-    </ul>
-
-    <h3> Add an item: </h3>
-    <%- include("partials/itemForm") %>
-
+    <% if (currentUser) { %>
+  <h1>Welcome, <%= currentUser.username %></h1>
+  <a href="/log-out">Log out</a>
+<% } else { %>
+  <h1>File uploader</h1>
+  <a href="/sign-up">Sign up</a> · <a href="/log-in">Log in</a>
+<% } %>
     
 </body>
 </html>

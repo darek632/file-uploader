@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= file.originalName %></title>
+</head>
+<body>
+  <p>
+    <% if (file.folderId) { %>
+      <a href="/folders/<%= file.folderId %>"> Back to folder</a>
+    <% } else { %>
+      <a href="/folders"> Back to folders</a>
+    <% } %>
+  </p>
+
+  <h1><%= file.originalname %></h1>
+
+  <ul>
+    <li><strong>Type:</strong> <%= file.mimetype %></li>
+    <li><strong>Size:</strong> <%= (file.size / 1024).toFixed(1) %> KB</li>
+    <li><strong>Uploaded:</strong> <%= file.createdAt.toLocaleString() %></li>
+  </ul>
+
+  <a href="/files/<%= file.id %>/download">Download</a>
+</body>
+</html>
