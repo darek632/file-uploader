@@ -87,3 +87,13 @@ exports.fileGet = async (req,res) => {
     res.render("file", {file});
 
 }
+
+exports.fileDownloadGet = async (req,res) => { 
+    const file = await db.fileGet(Number(req.params.id), req.user.id);
+    if (!file) return res.status(404).send("File not found");
+
+    const filePath = path.join(__dirname,"..", "uploads", file.filename);
+
+    res.download(filePath,file.originalname);
+
+}

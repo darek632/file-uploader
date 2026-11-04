@@ -28,7 +28,7 @@ projectRouter.post("/folders/:id/upload", isAuth,
     projectController.uploadToFolderPost);
 
 projectRouter.get("/files/:id",isAuth,projectController.fileGet);
-// projectRouter.get("/files/:id/download", isAuth, projectController.fileDownloadGet);
+projectRouter.get("/files/:id/download", isAuth, projectController.fileDownloadGet);
 
 
 module.exports = projectRouter;
