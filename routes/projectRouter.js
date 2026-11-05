@@ -39,9 +39,9 @@ module.exports = projectRouter;
 
 
 //to do after LUNCH: 
-// fix file with folder upload > URL is still in old format
-// push changes (consolidating upload to one route and folders displaying ALL folders AND files)
-// add partials of nav bars/log in out
+// fix file with folder upload > URL is still in old format // DONE
+// push changes (consolidating upload to one route and folders displaying ALL folders AND files) // DO NE
+// add partials of nav bars/log in out // 
 // push those changes
 // add file validation
 // push those changes

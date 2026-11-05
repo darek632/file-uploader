@@ -1,0 +1,12 @@
+<nav>
+  <a href="/">Home</a>
+  <% if (locals.currentUser) { %>
+    <a href="/folders">My Drive</a>
+    <span>Logged in as <%= currentUser.username %></span>
+    <a href="/log-out">Log out</a>
+  <% } else { %>
+    <a href="/log-in">Log in</a>
+    <a href="/sign-up">Sign up</a>
+  <% } %>
+</nav>
+<hr>
