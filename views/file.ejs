@@ -6,6 +6,8 @@
     <title><%= file.originalName %></title>
 </head>
 <body>
+  <%- include("partials/navbar") %>
+  
   <p>
     <% if (file.folderId) { %>
       <a href="/folders/<%= file.folderId %>"> Back to folder</a>
