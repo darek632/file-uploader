@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%=currentUser.username %>"'s files" </title>
+</head>
+<body>
+    <h1>All of your files</h1>
+
+    <h2>Create folder</h2>
+    <form action="/folders" method="POST">
+        <label for="name">Folder name</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Create</button>
+    </form>
+
+  <% if (files.length === 0) { %>
+    <p>You currenty don't have any files</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Uploaded</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% files.forEach(file => { %>
+          <tr>
+            <td><a href="/files/<%= file.id%>"><%= file.originalname %></a></td>
+            <td><%= file.mimetype %></td>
+            <td><%= (file.size / 1024).toFixed(1) %> KB</td>
+            <td><%= file.createdAt.toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+  
+  <p><a href="/upload-file">Upload a file without a folder</a></p>
+    
+</body>
+</html>

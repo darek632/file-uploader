@@ -1,8 +1,10 @@
 const { body, validationResult, matchedData } = require("express-validator");
 const db = require("../db/queries");
-const multer  = require('multer')
-const upload = multer({ dest: '../uploads/' })
+const multer  = require('multer');
 const path = require("path");
+const crypto = require("crypto");
+const supabase = require("../lib/supabase");
+
 
 // here will be a list of all of my controller functions. 
 
@@ -34,9 +36,19 @@ exports.uploadFilePost = async (req,res) => {
       if (!req.file) {
         return res.status(400).send("No file uploaded");
   }
-   const { originalname, filename, size, mimetype } = req.file;
-    await db.createFile(originalname, filename, size, mimetype, req.user.id);
-    res.redirect("/upload-file");
+   const { originalname, size, mimetype, buffer} = req.file;
+   const storagePath = `${req.user.id}/${crypto.randomUUID()}${path.extname(originalname)}`;
+
+   const { error } = await supabase.storage.
+   from("files")
+   .upload(storagePath, buffer, {contentType: mimetype});
+
+   if (error) return res.status(500).send("Upload failed: " + error.message);
+
+   const {data} = supabase.storage.from("files").getPublicUrl(storagePath);
+
+    await db.createFile(originalname, storagePath, data.publicUrl, size,mimetype, req.user.id);
+    res.redirect("/files");
 
 
 }
@@ -59,6 +71,11 @@ exports.oneFolderGet = async (req,res) => {
 
 };
 
+exports.filesGet = async (req,res) => { 
+    const files = await db.getFilesByUser(req.user.id);
+    res.render("files", {files});
+}
+
 exports.updateFolderPost = async (req,res) => {
     await db.updateFolder(Number(req.params.id), req.user.id, req.body.name);
     res.redirect(`/folders/${req.params.id}`);
@@ -71,13 +88,27 @@ exports.deleteFolderPost = async (req,res) => {
 
 
 exports.uploadToFolderPost = async (req, res) => {
+
   if (!req.file) return res.status(400).send("No file uploaded");
   const folderId = Number(req.params.id);
+
   const folder = await db.getFolderById(folderId, req.user.id);
   if (!folder) return res.status(404).send("Folder not found");
 
-  const { originalname, filename, size, mimetype } = req.file;
-  await db.createFile(originalname, filename, size, mimetype, req.user.id, folderId);
+ const { originalname, size, mimetype, buffer} = req.file;
+   const storagePath = `${req.user.id}/${crypto.randomUUID()}${path.extname(originalname)}`;
+
+   const { error } = await supabase.storage
+   .from("files")
+   .upload(storagePath, buffer, {contentType: mimetype});
+
+   if (error) return res.status(500).send("Upload failed: " + error.message);
+
+   const {data} = supabase.storage.from("files").getPublicUrl(storagePath);
+
+    await db.createFile(originalname, storagePath, data.publicUrl, size,mimetype, req.user.id,folderId);
+
+
   res.redirect(`/folders/${folderId}`);
 };
 
@@ -92,8 +123,14 @@ exports.fileDownloadGet = async (req,res) => {
     const file = await db.fileGet(Number(req.params.id), req.user.id);
     if (!file) return res.status(404).send("File not found");
 
-    const filePath = path.join(__dirname,"..", "uploads", file.filename);
+    const { data } = supabase.storage
+    .from("files")
+    .getPublicUrl(file.filename, {download : file.originalname});
 
-    res.download(filePath,file.originalname);
+
+    // const filePath = path.join(__dirname,"..", "uploads", file.filename);
+    // for use when files are stored locally in ../uploads
+
+    res.redirect(data.publicUrl);
 
 }

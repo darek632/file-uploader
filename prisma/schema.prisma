@@ -31,6 +31,7 @@ model File {
   id           Int      @id @default(autoincrement())
   originalname String
   filename     String
+  url String?
   size         Int
   mimetype     String
   createdAt    DateTime @default(now())

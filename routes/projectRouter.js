@@ -7,7 +7,11 @@ const path = require("node:path");
 const projectController = require("../controllers/projectController");
 const projectRouter = Router();
 const multer  = require('multer');
-const upload = multer({ dest: path.join(__dirname, "../uploads") });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }
+})
+
 const isAuth = require("../middleware/auth");
 
 
@@ -19,6 +23,7 @@ projectRouter.post("/upload-file", isAuth, upload.single("uploaded_file"),  proj
 
 projectRouter.get("/folders", isAuth,projectController.foldersGet);
 projectRouter.post("/folders", isAuth,projectController.createFolderPost);
+projectRouter.get("/files",isAuth, projectController.filesGet);
 
 projectRouter.get("/folders/:id", isAuth,projectController.oneFolderGet);
 projectRouter.post("folders/:id/update", isAuth,projectController.updateFolderPost);
