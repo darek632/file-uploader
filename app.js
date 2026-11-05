@@ -33,7 +33,9 @@ app.use(
 app.use(passport.session())
 
 app.use((req, res, next) => {
+
   res.locals.currentUser = req.user;
+  res.locals.error = req.query.error;
   next();
 
   //makes the logged in user retrieved from the session using passport, available on every request.

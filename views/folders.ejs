@@ -7,6 +7,10 @@
 </head>
 <body>
   <%- include("partials/navbar") %>
+  <% if (locals.error) { %>
+  <%= error %>
+  <% } %>
+
   <h1>My Folders</h1>
 
   <h2>New folder</h2>

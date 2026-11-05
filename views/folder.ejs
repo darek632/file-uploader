@@ -20,6 +20,11 @@
   </form>
 
   <h2>Upload a file to this folder</h2>
+      <% if (locals.error) { %>
+      <%= error %>
+      <% } %>
+
+    
   <form action="/upload-file" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="folderId" value="<%= folder.id %>">
     <input type="file" name="uploaded_file" required>
