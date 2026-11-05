@@ -29,8 +29,8 @@ exports.createFolder = (name,userId) =>
     prisma.folder.create( {data: { name, userId}});
 
 
-exports.getFilesByUser = (userId) => 
-    prisma.file.findMany({where: {userId}, orderBy: {originalname: "asc"}});
+// exports.getFilesByUser = (userId) => 
+//     prisma.file.findMany({where: {userId}, orderBy: {originalname: "asc"}});
 
 exports.getFoldersByUser = (userId) =>
   prisma.folder.findMany({ where: { userId }, orderBy: { name: "asc" } });
@@ -50,6 +50,14 @@ exports.updateFolder = (id, userId, name) =>
 
 exports.deleteFolder = (id, userId) =>
   prisma.folder.deleteMany({ where: { id, userId } });
+
+exports.getLooseFiles = (userId) => 
+    prisma.file.findMany({
+        where: {userId,folderId:null},
+        orderBy: {originalname: "asc"},
+    
+    })
+
 
 
 // one line no curly braces so no 'return'

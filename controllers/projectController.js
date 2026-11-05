@@ -33,9 +33,18 @@ exports.indexGet = async (req,res) => {
 exports.uploadFileGet = (req,res) => res.render("upload-file");
 
 exports.uploadFilePost = async (req,res) => { 
-      if (!req.file) {
+    if (!req.file) {
         return res.status(400).send("No file uploaded");
-  }
+    }
+
+    let folderId = null;
+
+    if(req.body.folderId) { 
+        folderId = Number(req.body.folderId);
+        const folder = await db.getFolderById(folderId,req.user.id);
+        if(!folder) return res.status(404).send("Folder not found");
+    }
+
    const { originalname, size, mimetype, buffer} = req.file;
    const storagePath = `${req.user.id}/${crypto.randomUUID()}${path.extname(originalname)}`;
 
@@ -47,16 +56,18 @@ exports.uploadFilePost = async (req,res) => {
 
    const {data} = supabase.storage.from("files").getPublicUrl(storagePath);
 
-    await db.createFile(originalname, storagePath, data.publicUrl, size,mimetype, req.user.id);
-    res.redirect("/files");
+    await db.createFile(originalname, storagePath, data.publicUrl, size,mimetype, req.user.id, folderId);
+    res.redirect(folderId ? `/folders/${folderId}` : "/folders");
 
-
-}
+};
 
 exports.foldersGet = async (req,res) => {
-    const folders = await db.getFoldersByUser(req.user.id);
+    const [folders,files] = await Promise.all([
+        db.getFoldersByUser(req.user.id),
+        db.getLooseFiles(req.user.id),
+    ]);
 
-    res.render("folders", {folders});
+    res.render("folders", {folders,files});
 }
 
 exports.createFolderPost = async (req,res) => { 
@@ -71,10 +82,10 @@ exports.oneFolderGet = async (req,res) => {
 
 };
 
-exports.filesGet = async (req,res) => { 
-    const files = await db.getFilesByUser(req.user.id);
-    res.render("files", {files});
-}
+// exports.filesGet = async (req,res) => { 
+//     const files = await db.getFilesByUser(req.user.id);
+//     res.render("files", {files});
+// }
 
 exports.updateFolderPost = async (req,res) => {
     await db.updateFolder(Number(req.params.id), req.user.id, req.body.name);
@@ -87,30 +98,30 @@ exports.deleteFolderPost = async (req,res) => {
 }
 
 
-exports.uploadToFolderPost = async (req, res) => {
+// exports.uploadToFolderPost = async (req, res) => {
 
-  if (!req.file) return res.status(400).send("No file uploaded");
-  const folderId = Number(req.params.id);
+//   if (!req.file) return res.status(400).send("No file uploaded");
+//   const folderId = Number(req.params.id);
 
-  const folder = await db.getFolderById(folderId, req.user.id);
-  if (!folder) return res.status(404).send("Folder not found");
+//   const folder = await db.getFolderById(folderId, req.user.id);
+//   if (!folder) return res.status(404).send("Folder not found");
 
- const { originalname, size, mimetype, buffer} = req.file;
-   const storagePath = `${req.user.id}/${crypto.randomUUID()}${path.extname(originalname)}`;
+//  const { originalname, size, mimetype, buffer} = req.file;
+//    const storagePath = `${req.user.id}/${crypto.randomUUID()}${path.extname(originalname)}`;
 
-   const { error } = await supabase.storage
-   .from("files")
-   .upload(storagePath, buffer, {contentType: mimetype});
+//    const { error } = await supabase.storage
+//    .from("files")
+//    .upload(storagePath, buffer, {contentType: mimetype});
 
-   if (error) return res.status(500).send("Upload failed: " + error.message);
+//    if (error) return res.status(500).send("Upload failed: " + error.message);
 
-   const {data} = supabase.storage.from("files").getPublicUrl(storagePath);
+//    const {data} = supabase.storage.from("files").getPublicUrl(storagePath);
 
-    await db.createFile(originalname, storagePath, data.publicUrl, size,mimetype, req.user.id,folderId);
+//     await db.createFile(originalname, storagePath, data.publicUrl, size,mimetype, req.user.id,folderId);
 
 
-  res.redirect(`/folders/${folderId}`);
-};
+//   res.redirect(`/folders/${folderId}`);
+// };
 
 exports.fileGet = async (req,res) => { 
     const file = await db.fileGet(Number(req.params.id),req.user.id);

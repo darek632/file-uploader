@@ -18,14 +18,14 @@
   </form>
 
   <h2>Upload a file to this folder</h2>
-  <form action="/folders/<%= folder.id %>/upload" method="POST" enctype="multipart/form-data">
+  <form action="/upload-file" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="folderId" value="<%= folder.id %>">
     <input type="file" name="uploaded_file" required>
     <button type="submit">Upload</button>
   </form>
 
-  <h2>Files</h2>
-  <% if (folder.files.length === 0) { %>
-    <p>This folder is empty.</p>
+    <% if (folder.files.length === 0) { %>
+    <p>No files in this folder</p>
   <% } else { %>
     <table>
       <thead>
@@ -48,6 +48,7 @@
       </tbody>
     </table>
   <% } %>
+  
 
   <form action="/folders/<%= folder.id %>/delete" method="POST"
         onsubmit="return confirm('Delete this folder and all its files?');">

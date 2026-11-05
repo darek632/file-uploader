@@ -33,6 +33,34 @@
     </ul>
   <% } %>
 
+  <h3>Remaining files:</h3>
+  <% if (files.length === 0) { %>
+    <p>No loose files.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Uploaded</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% files.forEach(file => { %>
+          <tr>
+            <td><a href="/files/<%= file.id%>"><%= file.originalname %></a></td>
+            <td><%= file.mimetype %></td>
+            <td><%= (file.size / 1024).toFixed(1) %> KB</td>
+            <td><%= file.createdAt.toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+
+
   <p><a href="/upload-file">Upload a file without a folder</a></p>
 </body>
 </html>
