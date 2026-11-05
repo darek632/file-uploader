@@ -4,22 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-
   <%- include("partials/navbar") %>
 
-    
-    <% if (locals.currentUser) { %>
-  <h1>Welcome, <%= currentUser.username %></h1>
+  <main class="container">
 
-  <p><a href="/folders">Go to my drive</a> to see your folders and files.</p>
-  <a href="/log-out">Log out</a>
-<% } else { %>
-  <h1>File uploader</h1>
-  <p>Store and organise your files in folders.</p>
-  <p><a href="/sign-up">Sign up</a> or <a href="/log-in">Log in.</a></p>
-<% } %>
-    
+    <section class="card hero">
+
+      <h1>File Uploader</h1>
+      <% if (locals.currentUser) { %>
+        <p>Welcome, <%= currentUser.username %>.</p>
+        <div class="hero-actions">
+          <a href="/folders" class="btn">Go to My Drive</a>
+
+        </div>
+      <% } else { %>
+        
+        <p>Store and organise your files in folders.</p>
+        <div class="hero-actions">
+          <a href="/log-in" class="btn">Log in</a>
+          <a href="/sign-up" class="btn btn-outline">Sign up</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
 </body>
 </html>

@@ -4,34 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Folders</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <%- include("partials/navbar") %>
   <% if (locals.error) { %>
   <%= error %>
   <% } %>
+  <main class="container">
+    <div class="page-header">
+        <h1>My Folders</h1>
+    </div>
+  
+    <section class="card">
+      <h2>New folder</h2>
+      <form action="/folders" method="POST">
+        <label for="name">Folder name</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit" class="btn">Create</button>
+      </form>
 
-  <h1>My Folders</h1>
-
-  <h2>New folder</h2>
-  <form action="/folders" method="POST">
-    <label for="name">Folder name</label>
-    <input type="text" id="name" name="name" required>
-    <button type="submit">Create</button>
-  </form>
+    </section>
+  
 
   <h2>Folders</h2>
   <% if (folders.length === 0) { %>
     <p>You don't have any folders yet.</p>
   <% } else { %>
-    <ul>
+    <ul class="strip-list">
       <% folders.forEach(folder => { %>
-        <li>
-          <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
+        <li class="strip">
+          <a href="/folders/<%= folder.id %>" class="strip-link"><%= folder.name %></a>
 
           <form action="/folders/<%= folder.id %>/delete" method="POST" style="display:inline"
                 onsubmit="return confirm('Delete this folder and all its files?');">
-            <button type="submit">Delete</button>
+            <button type="submit" class="btn btn-danger btn-small">Delete</button>
           </form>
         </li>
       <% }) %>
@@ -40,32 +47,42 @@
 
   <h3>Remaining files:</h3>
   <% if (files.length === 0) { %>
-    <p>No loose files.</p>
+    <p class="muted">No loose files.</p>
   <% } else { %>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Size</th>
-          <th>Uploaded</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% files.forEach(file => { %>
+    <div class="table-wrap">
+      <table>
+        <thead>
           <tr>
-            <td><a href="/files/<%= file.id%>"><%= file.originalname %></a></td>
-            <td><%= file.mimetype %></td>
-            <td><%= (file.size / 1024).toFixed(1) %> KB</td>
-            <td><%= file.createdAt.toLocaleDateString() %></td>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Uploaded</th>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% files.forEach(file => { %>
+            <tr>
+              <td><a href="/files/<%= file.id%>"><%= file.originalname %></a></td>
+              <td class="muted"><%= file.mimetype %></td>
+              <td class="muted"><%= (file.size / 1024).toFixed(1) %> KB</td>
+              <td class="muted"><%= file.createdAt.toLocaleDateString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
   <% } %>
 
 
+    <section class="card">
+      <h4> Upload a file</h4>
+      <form action="/upload-file" method="POST" enctype="multipart/form-data" class="inline-form">
+        <input type="file" name="uploaded_file" accept="image/*,.pdf,.txt" required>
+        <button type="submit" class="btn">Upload</button>
+      </form>
 
-  <p><a href="/upload-file">Upload a file without a folder</a></p>
+    </section>
+</main>
+    
 </body>
 </html>

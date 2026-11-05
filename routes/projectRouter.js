@@ -40,9 +40,9 @@ module.exports = projectRouter;
 // push changes (consolidating upload to one route and folders displaying ALL folders AND files) // DO NE
 // add partials of nav bars/log in out // D O N E
 // push those changes// DONE 
-// add file validation // 
-// push those changes
-// add styling
+// add file validation // D ONE
+// push those changes // DONE
+// add styling //
 // push those changes
 // deploy site
 // DONE!!

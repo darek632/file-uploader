@@ -16,6 +16,8 @@ const projectRouter = require("./routes/projectRouter");
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
+// for reading input from response forms.
+app.use(express.static(path.join(__dirname, "public")));
 
 
 app.use(
